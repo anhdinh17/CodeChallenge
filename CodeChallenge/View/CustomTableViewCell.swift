@@ -15,9 +15,9 @@ class CustomTableViewCell: UITableViewCell {
     var cellLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.frame = CGRect(x:165,
+        label.frame = CGRect(x:150,
                              y: 10,
-                             width: 100,
+                             width: 120,
                              height: 50)
         label.font = UIFont(name: "Helvetica-Bold", size: 18)
         return label
@@ -26,7 +26,7 @@ class CustomTableViewCell: UITableViewCell {
     var cellType: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.frame = CGRect(x:165,
+        label.frame = CGRect(x:150,
                              y: 40,
                              width: 100,
                              height: 50)

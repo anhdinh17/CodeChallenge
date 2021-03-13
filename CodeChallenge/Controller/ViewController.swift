@@ -8,9 +8,15 @@
 import UIKit
 import SnapKit
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
-    var array = ["Hello Kitty", "Saturday", "Monday"]
+//    var array = ["Hello Kitty","Sunday", "Saturday", "Monday","Tuesday","Wednesday","Thursday","Friday","Apple","Orange","Grape","Kiwi"]
+    
+    // array of DataModel
+    var dataArray = [DataModel]()
+    
+    // array after being sorted
+    var sortedArray = [DataModel]()
     
     // TableView
     private let tableView: UITableView = {
@@ -22,6 +28,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.addSubview(tableView)
         
         tableView.delegate = self
@@ -33,11 +40,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             make.edges.equalTo(self.view)
         }
         
+        DataManager.shared.delegate = self
+        DataManager.shared.fetchData()
+        
     }
 
 //MARK: - TableView DataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return array.count
+        return sortedArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -49,8 +59,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
 //
-        cell.cellLabel.text = array[indexPath.row]
-        cell.cellType.text = array[indexPath.row]
+        cell.cellLabel.text = "Data Item #\(indexPath.row + 1)"
+        cell.cellType.text = "Type: \(sortedArray[indexPath.row].type!)"
         return cell
     }
 
@@ -58,5 +68,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
     }
+
 }
 
+//MARK: - DataDelegate function
+extension ViewController: DataDelegate{
+    
+    func updateArray(_ data: String) {
+        do{
+            dataArray = try JSONDecoder().decode([DataModel].self,from: data.data(using: .utf8)!)
+            sortedArray = dataArray.sorted(by: {$0.type! < $1.type!})
+            
+            print("Data array: \n \(dataArray)")
+        }catch{
+            print("Failed to decode: \(error)")
+        }
+        
+        // reload tableView
+        tableView.reloadData()
+    }
+
+}
