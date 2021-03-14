@@ -56,9 +56,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
 //        cell.contentView.addSubview(cell.cellLabel)
 //        cell.contentView.addSubview(cell.cellType)
-        
-        
-//
+
+        cell.accessoryType = .disclosureIndicator
         cell.cellLabel.text = "Data Item #\(indexPath.row + 1)"
         cell.cellType.text = "Type: \(sortedArray[indexPath.row].type!)"
         return cell
@@ -66,6 +65,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
 //MARK: - TableView Delegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("cell number \(indexPath.row + 1) has been clicked")
+        
+        // check the secondViewController
+        guard let secondVC = storyboard?.instantiateViewController(identifier: "secondViewController") as? SecondViewController else {
+            return
+        }
+        
+        present(secondVC, animated: true, completion: nil)
         
     }
 

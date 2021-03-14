@@ -24,6 +24,21 @@
             </objects>
             <point key="canvasLocation" x="668.11594202898561" y="138.61607142857142"/>
         </scene>
+        <!--Second View Controller-->
+        <scene sceneID="7eP-Sz-MHU">
+            <objects>
+                <viewController storyboardIdentifier="secondViewController" id="ODP-8a-S9L" customClass="SecondViewController" customModule="CodeChallenge" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="WO5-Ov-6uf">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="J8e-Tl-3nE"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L3F-u0-nu6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1626" y="139"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="xrA-sg-JBD">
             <objects>
