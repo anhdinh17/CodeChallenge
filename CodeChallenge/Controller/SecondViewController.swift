@@ -40,6 +40,17 @@ class SecondViewController: UIViewController {
         return text
     }()
     
+    var saveButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("SAVE", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.backgroundColor = .blue
+        button.layer.cornerRadius = 9
+        return button
+    }()
+    
+    // Variables to receive values from Viewcontroller.
     var id: String?
     var date: String?
     var type: String?
@@ -65,6 +76,7 @@ class SecondViewController: UIViewController {
         view.addSubview(typeLabel)
         view.addSubview(dateLabel)
         view.addSubview(dataText)
+        view.addSubview(saveButton)
         
         idLabel.snp.makeConstraints { (make) in
             make.left.equalTo(view.snp.left).offset(20)
@@ -96,7 +108,12 @@ class SecondViewController: UIViewController {
             //make.bottom.equalTo(view.snp.bottom).offset(100)
         }
         
-        //""
+        saveButton.snp.makeConstraints { (make) in
+            make.centerX.equalTo(self.view)
+            make.top.equalTo(dataText.snp.bottom).offset(30)
+            make.width.equalTo(150)
+            make.height.equalTo(40)
+        }
         
         if let id = id {
             idLabel.text = "Id: \(id)"
@@ -130,10 +147,17 @@ class SecondViewController: UIViewController {
             dataText.text = "Data: This item has no Data"
         }
         
+        saveButton.addTarget(self, action: #selector(didTapSaveButton), for: .touchUpInside)
+        
+        
 //        typeLabel.text = "Text image other"
 //        dateLabel.text = "03/13/2021"
 //        dataText.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         
     }
 
+    @objc func didTapSaveButton(){
+        print("Save Button is tapped")
+    }
+    
 }
