@@ -7,13 +7,18 @@
 
 import UIKit
 import SnapKit
+import RealmSwift
 
 class SecondViewController: UIViewController {
-
-//    var holder : UIView = {
-//        let holder = UIView()
-//        return holder
-//    }()
+    
+    //    var holder : UIView = {
+    //        let holder = UIView()
+    //        return holder
+    //    }()
+    
+    var itemIsSaved = false
+    
+    let realm = try! Realm()
     
     var idLabel: UILabel = {
         let label = UILabel()
@@ -56,21 +61,25 @@ class SecondViewController: UIViewController {
     var type: String?
     var data: String?
     
+    // ///Users/anhdinh/Library/Developer/CoreSimulator/Devices/C5744E6A-97F6-4EF2-9F75-788C53DC8D78/data/Containers/Data/Application/B28A78AB-39CC-4B0D-B53C-E1E9CF103910/Documents/default.realm
+    
     override func viewDidLoad() {
         super.viewDidLoad()
- 
+        
+        print(Realm.Configuration.defaultConfiguration.fileURL)
+        
         configure()
     }
     
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        // éo hiểu tại sao có dòng này
-//        if holder.subviews.count == 0 {
-//            configure()
-//        }
-//    }
- 
-
+    //    override func viewDidLayoutSubviews() {
+    //        super.viewDidLayoutSubviews()
+    //        // éo hiểu tại sao có dòng này
+    //        if holder.subviews.count == 0 {
+    //            configure()
+    //        }
+    //    }
+    
+    
     func configure(){
         view.addSubview(idLabel)
         view.addSubview(typeLabel)
@@ -150,14 +159,43 @@ class SecondViewController: UIViewController {
         saveButton.addTarget(self, action: #selector(didTapSaveButton), for: .touchUpInside)
         
         
-//        typeLabel.text = "Text image other"
-//        dateLabel.text = "03/13/2021"
-//        dataText.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        //        typeLabel.text = "Text image other"
+        //        dateLabel.text = "03/13/2021"
+        //        dataText.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         
     }
-
+    
     @objc func didTapSaveButton(){
         print("Save Button is tapped")
+        
+        var savedItem = SavedData()
+        savedItem.id = id
+        savedItem.type = type
+        savedItem.date = date
+        savedItem.data = data
+        
+        // retrieve database
+        let results = realm.objects(SavedData.self)
+        
+        // check if the object already exists in database
+        for result in results {
+            if (result.id == savedItem.id) && (result.type == savedItem.type) && (result.date == savedItem.date) && (result.data == savedItem.data){
+                print("this item was already saved")
+                itemIsSaved = true
+            }
+        }
+        
+        // if object doesn't exist, we add new object to database
+        if itemIsSaved == false {
+            do{
+                try realm.write{
+                    realm.add(savedItem)
+                }
+            }catch{
+                print("Error saving this item to Realm Database: \(error)")
+            }
+        }
     }
     
+        
 }

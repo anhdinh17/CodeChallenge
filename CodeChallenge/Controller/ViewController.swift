@@ -92,7 +92,8 @@ extension ViewController: DataDelegate{
             
             sortedArray = dataArray.sorted(by: {$0.type! < $1.type!})
             
-            print(sortedArray)
+            //print(sortedArray)
+            
           //  print("Data array: \n \(dataArray)") ko cần nữa
         }catch{
             print("Failed to decode: \(error)")
