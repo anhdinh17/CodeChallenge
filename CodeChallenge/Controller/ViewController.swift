@@ -72,6 +72,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             return
         }
         
+        secondVC.id = sortedArray[indexPath.row].id
+        secondVC.type = sortedArray[indexPath.row].type
+        secondVC.date = sortedArray[indexPath.row].date
+        secondVC.data = sortedArray[indexPath.row].data
+        
         present(secondVC, animated: true, completion: nil)
         
     }
@@ -84,9 +89,11 @@ extension ViewController: DataDelegate{
     func updateArray(_ data: String) {
         do{
             dataArray = try JSONDecoder().decode([DataModel].self,from: data.data(using: .utf8)!)
+            
             sortedArray = dataArray.sorted(by: {$0.type! < $1.type!})
             
-            print("Data array: \n \(dataArray)")
+            print(sortedArray)
+          //  print("Data array: \n \(dataArray)") ko cần nữa
         }catch{
             print("Failed to decode: \(error)")
         }
