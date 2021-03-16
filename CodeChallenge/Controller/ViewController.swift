@@ -18,7 +18,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var sortedArray = [DataModel]()
     
     // TableView
-    private let tableView: UITableView = {
+    let tableView: UITableView = {
         let table = UITableView()
         table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         table.rowHeight = 100
@@ -27,10 +27,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-       // gradientBackground()
-        
-        view.addSubview(tableView)
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -49,8 +45,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
 
-
-        //cell.accessoryType = .disclosureIndicator
         cell.cellLabel.text = "Data Item #\(indexPath.row + 1)"
         cell.cellType.text = "Type: \(sortedArray[indexPath.row].type!)"
         
@@ -59,7 +53,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
 //MARK: - TableView Delegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("cell number \(indexPath.row + 1) has been clicked")
         
         // check the secondViewController
         guard let secondVC = storyboard?.instantiateViewController(identifier: "secondViewController") as? SecondViewController else {
@@ -77,6 +70,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableViewConfigure(){
+        
+        self.view.addSubview(tableView)
+        
         // register CustomTableViewCell
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         // Using Snapkit to make constraints for TableView
@@ -85,13 +81,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    func gradientBackground(){
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = view.frame
-        gradientLayer.colors = [UIColor.systemGreen.cgColor,UIColor.systemYellow.cgColor]
-        view.layer.addSublayer(gradientLayer)
-    }
-
 }
 
 //MARK: - DataDelegate function
@@ -109,7 +98,10 @@ extension ViewController: DataDelegate{
         }
         
         // reload tableView
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+        
     }
 
 }

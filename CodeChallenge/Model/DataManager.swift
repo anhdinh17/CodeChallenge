@@ -29,8 +29,10 @@ class DataManager{
                 // convert data to String
                 let stringData = String(data: data, encoding: .utf8)
                 
-                //print(data)
-                self.delegate?.updateArray(stringData!)
+                if let stringData = stringData{
+                    self.delegate?.updateArray(stringData)
+                }
+                
             }
             
         }

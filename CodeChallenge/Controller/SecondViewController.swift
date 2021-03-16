@@ -18,7 +18,6 @@ class SecondViewController: UIViewController {
     
     var idLabel: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = .blue
         label.numberOfLines = 0
         label.font = .boldSystemFont(ofSize: 18)
         label.text = "ID: "
@@ -26,16 +25,14 @@ class SecondViewController: UIViewController {
     }()
     
     var idText: UILabel = {
-        let text = UILabel()
-        //text.backgroundColor = .red
-        text.font = UIFont(name:"Helvetica", size: 18)
-        return text
+        let label = UILabel()
+        label.font = UIFont(name:"Helvetica", size: 18)
+        return label
     }()
     
     var typeLabel: UILabel = {
         let label = UILabel()
         label.text = "Type: "
-        //label.backgroundColor = .blue
         label.numberOfLines = 0
         label.font = .boldSystemFont(ofSize: 18)
         return label
@@ -43,14 +40,13 @@ class SecondViewController: UIViewController {
     
     var typeText: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = .red
+        label.font = UIFont(name:"Helvetica", size: 18)
         label.numberOfLines = 0
         return label
     }()
     
     var dateLabel: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = .blue
         label.numberOfLines = 0
         label.font = .boldSystemFont(ofSize: 18)
         label.text = "Date: "
@@ -59,37 +55,25 @@ class SecondViewController: UIViewController {
     
     var dateText: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = .red
+        label.font = UIFont(name:"Helvetica", size: 18)
         label.numberOfLines = 0
         return label
     }()
     
     var dataLabel: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = .blue
         label.numberOfLines = 0
         label.text = "Data:"
         label.font = .boldSystemFont(ofSize: 18)
         return label
     }()
     
-//    var dataText: UILabel = {
-//        let label = UILabel()
-//        label.backgroundColor = .red
-//        label.numberOfLines = 0
-//        label.font = UIFont(name:"Helvetica", size: 18)
-//        //label.contentMode = .scaleToFill
-//        return label
-//    }()
-    
     var dataText: UITextView = {
         let label = UITextView()
-        //label.backgroundColor = .red
         label.textContainer.lineBreakMode = .byCharWrapping
         label.backgroundColor = .clear
         label.isEditable = false
         label.font = UIFont(name:"Helvetica", size: 18)
-        //label.contentMode = .scaleToFill
         return label
     }()
     
@@ -109,14 +93,11 @@ class SecondViewController: UIViewController {
     var type: String?
     var data: String?
     
-    // ///Users/anhdinh/Library/Developer/CoreSimulator/Devices/C5744E6A-97F6-4EF2-9F75-788C53DC8D78/data/Containers/Data/Application/B28A78AB-39CC-4B0D-B53C-E1E9CF103910/Documents/default.realm
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // url of realm file
         print(Realm.Configuration.defaultConfiguration.fileURL)
-        
-       // view.backgroundColor = UIColor.flatGreenColorDark()
         
         gradientColor()
         
@@ -126,7 +107,6 @@ class SecondViewController: UIViewController {
     
     
     @objc func didTapSaveButton(){
-        print("Save Button is tapped")
         
         // create an object to save to Realm
         let savedItem = SavedData()
@@ -141,7 +121,6 @@ class SecondViewController: UIViewController {
         // check if the object already exists in database
         for result in results {
             if (result.id == savedItem.id) && (result.type == savedItem.type) && (result.date == savedItem.date) && (result.data == savedItem.data){
-                print("this item was already saved")
                 existingItemAlert()
                 itemIsSaved = true
             }
@@ -166,7 +145,7 @@ class SecondViewController: UIViewController {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
         gradientLayer.colors = [UIColor.systemYellow.cgColor,UIColor.systemGray3.cgColor]
-       view.layer.addSublayer(gradientLayer)
+        view.layer.addSublayer(gradientLayer)
     }
     
     // Alert for saving item
@@ -251,10 +230,8 @@ extension SecondViewController {
             make.left.equalTo(view.snp.left).offset(20)
             make.top.equalTo(dataLabel.snp.bottom).offset(5)
             make.right.equalTo(view.snp.right).offset(-20)
-          //  make.width.equalTo(view.snp.width).offset(40)
             make.height.equalTo(view.frame.size.height - 400)
-           // make.size.equalTo(CGSize(width: view.frame.size.width - 40 ,
-                                  //   height: view.frame.size.height - 400 ))
+
         }
         
         saveButton.snp.makeConstraints { (make) in
@@ -266,35 +243,43 @@ extension SecondViewController {
         
         // Set texts for labels
         if let id = id {
-            idText.text = "\(id)"
+            if id.isEmpty == true {
+                idText.text = "This item does not have an ID"
+            }else{
+                idText.text = "\(id)"
+            }
         }else {
-            idLabel.text = "This item doesnt have an ID"
+            idText.text = "This item does not have an ID"
         }
         
         if let type = type {
-            typeText.text = "\(type)"
+            if type.isEmpty == true {
+                typeText.text = "This item does not have a Type"
+            }else{
+                typeText.text = "\(type)"
+            }
         }else {
-            typeText.text = "This item doesnt have a Type"
+            typeText.text = "This item does not have a Type"
         }
         
         if let date = date {
             if date.isEmpty == true{
-                dateText.text = "This item doesnt have a Date"
+                dateText.text = "This item does not have a Date"
             }else{
                 dateText.text = "\(date)"
             }
         }else {
-            dateText.text = "This item doesnt have a Date"
+            dateText.text = "This item does not have a Date"
         }
         
         if let data = data {
             if data.isEmpty == true{
-                dataText.text = "This item has no Data"
+                dataText.text = "This item does not have Data"
             }else{
                 dataText.text = "\(data)"
             }
         }else {
-            dataText.text = "This item has no Data"
+            dataText.text = "This item does not have Data"
         }
         
         // add action to save button

@@ -8,6 +8,7 @@
 import Foundation
 import RealmSwift
 
+// Data structure to save to Realm
 class SavedData: Object {
     
     @objc dynamic var id: String?

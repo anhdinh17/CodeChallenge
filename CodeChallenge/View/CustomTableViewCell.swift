@@ -27,13 +27,10 @@ class CustomTableViewCell: UITableViewCell {
         return label
     }()
     
-    /* this is to set gradient color for the cell. Source:https://gist.github.com/hcn1519/5de2a631649b769398c5bfbc29e30ca9 */
     override func layoutSublayers(of layer: CALayer) {
         super.layoutSublayers(of: self.layer)
 
         gradientColor()
-        
-        //contentView.backgroundColor = UIColor.randomFlat()
         
         configure()
     }
@@ -50,17 +47,7 @@ class CustomTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        
-//        gradientLayer.frame = contentView.bounds
-//        gradientLayer.colors = [UIColor.systemRed.cgColor,UIColor.systemYellow.cgColor]
-//        contentView.layer.addSublayer(gradientLayer)
-        
-        //contentView.backgroundColor = .red
-        
-        
-        //configure()
-        
+
     }
     
     required init?(coder: NSCoder) {
