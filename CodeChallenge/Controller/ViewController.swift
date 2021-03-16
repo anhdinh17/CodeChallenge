@@ -7,10 +7,9 @@
 
 import UIKit
 import SnapKit
+import ChameleonFramework
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
-
-//    var array = ["Hello Kitty","Sunday", "Saturday", "Monday","Tuesday","Wednesday","Thursday","Friday","Apple","Orange","Grape","Kiwi"]
     
     // array of DataModel
     var dataArray = [DataModel]()
@@ -29,16 +28,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         
+       // gradientBackground()
+        
         view.addSubview(tableView)
         
         tableView.delegate = self
         tableView.dataSource = self
-        // register CustomTableViewCell
-        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
-        // Using Snapkit to make constraints for TableView
-        tableView.snp.makeConstraints { (make) in
-            make.edges.equalTo(self.view)
-        }
+        tableViewConfigure()
         
         DataManager.shared.delegate = self
         DataManager.shared.fetchData()
@@ -52,14 +48,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-      //  cell.textLabel?.text = array[indexPath.row]
-        
-//        cell.contentView.addSubview(cell.cellLabel)
-//        cell.contentView.addSubview(cell.cellType)
 
-        cell.accessoryType = .disclosureIndicator
+
+        //cell.accessoryType = .disclosureIndicator
         cell.cellLabel.text = "Data Item #\(indexPath.row + 1)"
         cell.cellType.text = "Type: \(sortedArray[indexPath.row].type!)"
+        
         return cell
     }
 
@@ -72,6 +66,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             return
         }
         
+        // set values for secondViewController variables
         secondVC.id = sortedArray[indexPath.row].id
         secondVC.type = sortedArray[indexPath.row].type
         secondVC.date = sortedArray[indexPath.row].date
@@ -79,6 +74,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         present(secondVC, animated: true, completion: nil)
         
+    }
+    
+    func tableViewConfigure(){
+        // register CustomTableViewCell
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
+        // Using Snapkit to make constraints for TableView
+        tableView.snp.makeConstraints { (make) in
+            make.edges.equalTo(self.view)
+        }
+    }
+    
+    func gradientBackground(){
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.frame
+        gradientLayer.colors = [UIColor.systemGreen.cgColor,UIColor.systemYellow.cgColor]
+        view.layer.addSublayer(gradientLayer)
     }
 
 }
@@ -90,11 +101,9 @@ extension ViewController: DataDelegate{
         do{
             dataArray = try JSONDecoder().decode([DataModel].self,from: data.data(using: .utf8)!)
             
+            // sort array based on type
             sortedArray = dataArray.sorted(by: {$0.type! < $1.type!})
-            
-            //print(sortedArray)
-            
-          //  print("Data array: \n \(dataArray)") ko cần nữa
+
         }catch{
             print("Failed to decode: \(error)")
         }

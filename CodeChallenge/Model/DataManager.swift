@@ -18,12 +18,15 @@ class DataManager{
     
     var delegate: DataDelegate?
     
+    let urlString: String = "https://raw.githubusercontent.com/AxxessTech/Mobile-Projects/master/challenge.json"
+    
     func fetchData(){
         // use Alamorefire to make request to the url and get response
-        AF.request("https://raw.githubusercontent.com/AxxessTech/Mobile-Projects/master/challenge.json").response { (response) in
+        AF.request(urlString).response { (response) in
             
             if let data = response.data{
                 
+                // convert data to String
                 let stringData = String(data: data, encoding: .utf8)
                 
                 //print(data)
@@ -31,6 +34,7 @@ class DataManager{
             }
             
         }
+        
     }
     
 }

@@ -8,41 +8,89 @@
 import UIKit
 import SnapKit
 import RealmSwift
+import ChameleonFramework
 
 class SecondViewController: UIViewController {
-    
-    //    var holder : UIView = {
-    //        let holder = UIView()
-    //        return holder
-    //    }()
-    
+
     var itemIsSaved = false
     
     let realm = try! Realm()
     
     var idLabel: UILabel = {
         let label = UILabel()
+        //label.backgroundColor = .blue
         label.numberOfLines = 0
+        label.font = .boldSystemFont(ofSize: 18)
+        label.text = "ID: "
         return label
+    }()
+    
+    var idText: UILabel = {
+        let text = UILabel()
+        //text.backgroundColor = .red
+        text.font = UIFont(name:"Helvetica", size: 18)
+        return text
     }()
     
     var typeLabel: UILabel = {
         let label = UILabel()
+        label.text = "Type: "
+        //label.backgroundColor = .blue
+        label.numberOfLines = 0
+        label.font = .boldSystemFont(ofSize: 18)
+        return label
+    }()
+    
+    var typeText: UILabel = {
+        let label = UILabel()
+        //label.backgroundColor = .red
         label.numberOfLines = 0
         return label
     }()
     
     var dateLabel: UILabel = {
         let label = UILabel()
+        //label.backgroundColor = .blue
+        label.numberOfLines = 0
+        label.font = .boldSystemFont(ofSize: 18)
+        label.text = "Date: "
+        return label
+    }()
+    
+    var dateText: UILabel = {
+        let label = UILabel()
+        //label.backgroundColor = .red
         label.numberOfLines = 0
         return label
     }()
     
+    var dataLabel: UILabel = {
+        let label = UILabel()
+        //label.backgroundColor = .blue
+        label.numberOfLines = 0
+        label.text = "Data:"
+        label.font = .boldSystemFont(ofSize: 18)
+        return label
+    }()
+    
+//    var dataText: UILabel = {
+//        let label = UILabel()
+//        label.backgroundColor = .red
+//        label.numberOfLines = 0
+//        label.font = UIFont(name:"Helvetica", size: 18)
+//        //label.contentMode = .scaleToFill
+//        return label
+//    }()
+    
     var dataText: UITextView = {
-        let text = UITextView()
-        text.textContainer.lineBreakMode = .byCharWrapping
-        text.font = UIFont(name:"Helvetica", size: 18)
-        return text
+        let label = UITextView()
+        //label.backgroundColor = .red
+        label.textContainer.lineBreakMode = .byCharWrapping
+        label.backgroundColor = .clear
+        label.isEditable = false
+        label.font = UIFont(name:"Helvetica", size: 18)
+        //label.contentMode = .scaleToFill
+        return label
     }()
     
     var saveButton: UIButton = {
@@ -68,107 +116,20 @@ class SecondViewController: UIViewController {
         
         print(Realm.Configuration.defaultConfiguration.fileURL)
         
+       // view.backgroundColor = UIColor.flatGreenColorDark()
+        
+        gradientColor()
+        
         configure()
     }
+   
     
-    //    override func viewDidLayoutSubviews() {
-    //        super.viewDidLayoutSubviews()
-    //        // éo hiểu tại sao có dòng này
-    //        if holder.subviews.count == 0 {
-    //            configure()
-    //        }
-    //    }
-    
-    
-    func configure(){
-        view.addSubview(idLabel)
-        view.addSubview(typeLabel)
-        view.addSubview(dateLabel)
-        view.addSubview(dataText)
-        view.addSubview(saveButton)
-        
-        idLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(view.snp.left).offset(20)
-            make.top.equalTo(view.snp.top).offset(20)
-            make.width.equalTo(view.snp.width).offset(40)
-            make.height.equalTo(40)
-        }
-        
-        typeLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(view.snp.left).offset(20)
-            make.top.equalTo(idLabel.snp.bottom).offset(20)
-            make.width.equalTo(view.snp.width).offset(40)
-            make.height.equalTo(40)
-        }
-        
-        dateLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(view.snp.left).offset(20)
-            make.top.equalTo(typeLabel.snp.bottom).offset(20)
-            make.width.equalTo(view.snp.width).offset(40)
-            make.height.equalTo(40)
-        }
-        
-        dataText.snp.makeConstraints { (make) in
-            make.left.equalTo(view.snp.left).offset(20)
-            make.top.equalTo(dateLabel.snp.bottom).offset(20)
-            make.right.equalTo(view.snp.right).offset(-20)
-            make.size.equalTo(CGSize(width: view.frame.size.width - 40 , height: view.frame.size.height
-                                        - 400 ))
-            //make.bottom.equalTo(view.snp.bottom).offset(100)
-        }
-        
-        saveButton.snp.makeConstraints { (make) in
-            make.centerX.equalTo(self.view)
-            make.top.equalTo(dataText.snp.bottom).offset(30)
-            make.width.equalTo(150)
-            make.height.equalTo(40)
-        }
-        
-        if let id = id {
-            idLabel.text = "Id: \(id)"
-        }else {
-            idLabel.text = "This item doesnt have an ID"
-        }
-        
-        if let type = type {
-            typeLabel.text = "Type: \(type)"
-        }else {
-            typeLabel.text = "Type: This item doesnt have a Type"
-        }
-        
-        if let date = date {
-            if date.isEmpty == true{
-                dateLabel.text = "Date: This item doesnt have a Date"
-            }else{
-                dateLabel.text = "Date: \(date)"
-            }
-        }else {
-            dateLabel.text = "Date: This item doesnt have a Date"
-        }
-        
-        if let data = data {
-            if data.isEmpty == true{
-                dataText.text = "Data: This item has no Data"
-            }else{
-                dataText.text = "Data: \(data)"
-            }
-        }else {
-            dataText.text = "Data: This item has no Data"
-        }
-        
-        saveButton.addTarget(self, action: #selector(didTapSaveButton), for: .touchUpInside)
-        
-        
-        //        typeLabel.text = "Text image other"
-        //        dateLabel.text = "03/13/2021"
-        //        dataText.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-        
-    }
     
     @objc func didTapSaveButton(){
         print("Save Button is tapped")
         
-        var savedItem = SavedData()
+        // create an object to save to Realm
+        let savedItem = SavedData()
         savedItem.id = id
         savedItem.type = type
         savedItem.date = date
@@ -181,6 +142,7 @@ class SecondViewController: UIViewController {
         for result in results {
             if (result.id == savedItem.id) && (result.type == savedItem.type) && (result.date == savedItem.date) && (result.data == savedItem.data){
                 print("this item was already saved")
+                existingItemAlert()
                 itemIsSaved = true
             }
         }
@@ -194,8 +156,149 @@ class SecondViewController: UIViewController {
             }catch{
                 print("Error saving this item to Realm Database: \(error)")
             }
+            
+            itemSavedAlert()
         }
     }
     
+    // Gradient color
+    func gradientColor(){
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.bounds
+        gradientLayer.colors = [UIColor.systemYellow.cgColor,UIColor.systemGray3.cgColor]
+       view.layer.addSublayer(gradientLayer)
+    }
+    
+    // Alert for saving item
+    func itemSavedAlert(){
+        let alert = UIAlertController(title: "Alert", message: "This item has been saved", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    // Alert for existing items
+    func existingItemAlert(){
+        let alert = UIAlertController(title: "Alert", message: "This item was already saved", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+}
+
+//MARK: - configure for labels, texts, buttons
+extension SecondViewController {
+    
+    func configure(){
+        view.addSubview(idLabel)
+        view.addSubview(idText)
+        view.addSubview(typeLabel)
+        view.addSubview(typeText)
+        view.addSubview(dateLabel)
+        view.addSubview(dateText)
+        view.addSubview(dataLabel)
+        view.addSubview(dataText)
+        view.addSubview(saveButton)
         
+        idLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left).offset(20)
+            make.top.equalTo(view.snp.top).offset(20)
+            make.width.equalTo(25)
+            make.height.equalTo(40)
+        }
+        
+        idText.snp.makeConstraints { (make) in
+            make.top.equalTo(view.snp.top).offset(20)
+            make.left.equalTo(idLabel.snp.right).offset(5)
+            make.right.equalTo(view.snp.right).offset(-20)
+            make.height.equalTo(idLabel.snp.height)
+        }
+        
+        typeLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left).offset(20)
+            make.top.equalTo(idLabel.snp.bottom).offset(20)
+            make.width.equalTo(50)
+            make.height.equalTo(40)
+        }
+        
+        typeText.snp.makeConstraints { (make) in
+            make.top.equalTo(typeLabel.snp.top)
+            make.left.equalTo(typeLabel.snp.right).offset(5)
+            make.right.equalTo(view.snp.right).offset(-20)
+            make.height.equalTo(typeLabel.snp.height)
+        }
+        
+        dateLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left).offset(20)
+            make.top.equalTo(typeLabel.snp.bottom).offset(20)
+            make.width.equalTo(50)
+            make.height.equalTo(40)
+        }
+        
+        dateText.snp.makeConstraints { (make) in
+            make.top.equalTo(dateLabel)
+            make.left.equalTo(dateLabel.snp.right).offset(5)
+            make.right.equalTo(view.snp.right).offset(-20)
+            make.height.equalTo(40)
+        }
+        
+        dataLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(dateLabel.snp.bottom).offset(20)
+            make.left.equalTo(dateLabel)
+            make.width.equalTo(50)
+            make.right.equalTo(dateLabel)
+        }
+        
+        dataText.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left).offset(20)
+            make.top.equalTo(dataLabel.snp.bottom).offset(5)
+            make.right.equalTo(view.snp.right).offset(-20)
+          //  make.width.equalTo(view.snp.width).offset(40)
+            make.height.equalTo(view.frame.size.height - 400)
+           // make.size.equalTo(CGSize(width: view.frame.size.width - 40 ,
+                                  //   height: view.frame.size.height - 400 ))
+        }
+        
+        saveButton.snp.makeConstraints { (make) in
+            make.centerX.equalTo(self.view)
+            make.top.equalTo(dataText.snp.bottom).offset(30)
+            make.width.equalTo(150)
+            make.height.equalTo(40)
+        }
+        
+        // Set texts for labels
+        if let id = id {
+            idText.text = "\(id)"
+        }else {
+            idLabel.text = "This item doesnt have an ID"
+        }
+        
+        if let type = type {
+            typeText.text = "\(type)"
+        }else {
+            typeText.text = "This item doesnt have a Type"
+        }
+        
+        if let date = date {
+            if date.isEmpty == true{
+                dateText.text = "This item doesnt have a Date"
+            }else{
+                dateText.text = "\(date)"
+            }
+        }else {
+            dateText.text = "This item doesnt have a Date"
+        }
+        
+        if let data = data {
+            if data.isEmpty == true{
+                dataText.text = "This item has no Data"
+            }else{
+                dataText.text = "\(data)"
+            }
+        }else {
+            dataText.text = "This item has no Data"
+        }
+        
+        // add action to save button
+        saveButton.addTarget(self, action: #selector(didTapSaveButton), for: .touchUpInside)
+
+    }
 }
