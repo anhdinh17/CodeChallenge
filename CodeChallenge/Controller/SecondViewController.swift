@@ -78,23 +78,19 @@ class SecondViewController: UIViewController {
     }()
     
     
-    var image: UIImageView = {
+    var dataImage: UIImageView = {
         let image = UIImageView()
-        //        image.backgroundColor = .green
         image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
         return image
     }()
     
-    var dataText: UIView = {
-        let text = UIView()
-        //text.textContainer.lineBreakMode = .byCharWrapping
-        //text.isEditable = false
-        //text.font = UIFont(name:"Helvetica", size: 18)
-        return text
+    var dataHolder: UIView = {
+        let holder = UIView()
+        return holder
     }()
     
-    var resultText: UITextView = {
+    var dataText: UITextView = {
         let text = UITextView()
         text.textContainer.lineBreakMode = .byCharWrapping
         text.backgroundColor = .clear
@@ -123,19 +119,10 @@ class SecondViewController: UIViewController {
         gradientColor()
         
         configure()
-        
-        //        let badURL = verifyUrl(urlString: "http://This/will/not/load/")
-        //        print(badURL)
-        
-        //        verifyImageURL(url: "http://This/will/not/load/")
-        
-        //        checkImageData()
+
     }
     
-    
-    
-    
-    
+
     // Gradient color
     func gradientColor(){
         let gradientLayer = CAGradientLayer()
@@ -160,9 +147,9 @@ extension SecondViewController {
         view.addSubview(dateLabel)
         view.addSubview(dateText)
         view.addSubview(dataLabel)
-        view.addSubview(dataText)
+        view.addSubview(dataHolder)
         view.addSubview(saveButton)
-        dataText.addSubview(resultText)
+        dataHolder.addSubview(dataText)
         
         idLabel.snp.makeConstraints { (make) in
             make.left.equalTo(view.snp.left).offset(20)
@@ -213,7 +200,7 @@ extension SecondViewController {
             make.right.equalTo(dateLabel)
         }
         
-        dataText.snp.makeConstraints { (make) in
+        dataHolder.snp.makeConstraints { (make) in
             make.left.equalTo(view.snp.left).offset(20)
             make.top.equalTo(dataLabel.snp.bottom).offset(5)
             make.right.equalTo(view.snp.right).offset(-20)
@@ -221,13 +208,13 @@ extension SecondViewController {
             
         }
         
-        resultText.snp.makeConstraints { (make) in
-            make.edges.equalTo(dataText)
+        dataText.snp.makeConstraints { (make) in
+            make.edges.equalTo(dataHolder)
         }
         
         saveButton.snp.makeConstraints { (make) in
             make.centerX.equalTo(self.view)
-            make.top.equalTo(dataText.snp.bottom).offset(30)
+            make.top.equalTo(dataHolder.snp.bottom).offset(30)
             make.width.equalTo(150)
             make.height.equalTo(40)
         }
@@ -235,6 +222,7 @@ extension SecondViewController {
         
         // Set texts for labels
         if let id = id {
+            // check if it's an empty string
             if id.isEmpty == true {
                 idText.text = "This item does not have an ID"
             }else{
@@ -266,14 +254,14 @@ extension SecondViewController {
         
         if let data = data {
             if data.isEmpty == true{
-                resultText.text = "This item does not have Data"
+                dataText.text = "This item does not have Data"
             }else if type == "image"{
                 addImage()
             }else{
-                resultText.text = "\(data)"
+                dataText.text = "\(data)"
             }
         }else {
-            resultText.text = "This item does not have Data"
+            dataText.text = "This item does not have Data"
         }
         
         // add action to save button
@@ -300,10 +288,12 @@ extension SecondViewController {
         
         // check if the object already exists in database
         for result in results {
-            if (result.id == savedItem.id) && (result.type == savedItem.type) && (result.date == savedItem.date) && (result.data == savedItem.data){
+            // check if this item is not random image
+            if (result.id == savedItem.id) && (result.type == savedItem.type) && (result.date == savedItem.date) && (result.data == savedItem.data) && !(savedItem.data!.contains("any")){
                 existingItemAlert()
                 itemIsSaved = true
             }
+            
         }
         
         // if object doesn't exist, we add new object to database
@@ -311,40 +301,49 @@ extension SecondViewController {
             do{
                 // save image to Photos Album
                 if type == "image"{
-                    if let data = data {
-                        if data.contains("any"){
-                            guard let image = image.image else {return}
-                            // save image to photos album on iphones
-                            UIImageWriteToSavedPhotosAlbum(image,
-                                                           self,
-                                                           #selector(imageSaveToPhotoAlbum(_:didFinishSavingWithError:contextInfo:)),
-                                                           nil)
+                    if let data = savedItem.data {
+                        // check if this is a fixed image
+                        if data.contains("png") || data.contains("jpg"){
+                            addImageToAlbum()
                             
                             // app also saves this item to database
-        //                    try realm.write{
-        //                        realm.add(savedItem)
-        //                    }
+                            try realm.write{
+                                realm.add(savedItem)
+                            }
+                            
+                            imageSavedAlert()
+                        } else if data.contains("any"){ // check if this is random images
+                            addImageToAlbum()
+                            
+                            try realm.write{
+                                realm.add(savedItem)
+                            }
+                            
                         }
                     }
-
-
                 }else{
                     try realm.write{
                         realm.add(savedItem)
                     }
+                    itemSavedAlert()
                 }
                 
             }catch{
                 print("Error saving this item to Realm Database: \(error)")
             }
-            
-            itemSavedAlert()
+
         }
     }
     
     // Alert for saving item
     func itemSavedAlert(){
         let alert = UIAlertController(title: "Alert", message: "This item has been saved", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func imageSavedAlert(){
+        let alert = UIAlertController(title: "Alert", message: "Your image has been saved to Photos", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
@@ -364,23 +363,24 @@ extension SecondViewController {
     
     func addImage(){
         
-        dataText.addSubview(image)
-        image.snp.makeConstraints { (make) in
-            make.top.equalTo(dataText)
-            make.left.equalTo(dataText)
-            make.width.equalTo(dataText)
-            make.height.equalTo(dataText)
+        dataHolder.addSubview(dataImage)
+        dataImage.snp.makeConstraints { (make) in
+            make.top.equalTo(dataHolder)
+            make.left.equalTo(dataHolder)
+            make.width.equalTo(dataHolder)
+            make.height.equalTo(dataHolder)
         }
         
         if let imageUrl = data{
             
             AF.request(imageUrl).responseData { (response) in
                 if let data = response.data{
+                    // set image for imageView
                     DispatchQueue.main.async {
-                        self.image.image = UIImage(data: data)
+                        self.dataImage.image = UIImage(data: data)
                     }
                 }else{
-                    self.resultText.text = "Invalid url"
+                    self.dataText.text = "Invalid url"
                 }
             }
         }
@@ -389,51 +389,17 @@ extension SecondViewController {
     
 }
 
-//extension SecondViewController {
-//    // func to check if url contains image file
-//    /*
-//     Source: https://stackoverflow.com/questions/44843835/how-to-check-url-is-image-or-video
-//    */
-//    func verifyImageURL(url: String){
-//        let url1 = url
-//                let imageExtensions = ["png", "jpg", "gif","any"]
-//                //...
-//                // Iterate & match the URL objects from your checking results
-//                let url: URL? = NSURL(fileURLWithPath: url1) as URL
-//                let pathExtention = url?.pathExtension
-//                    if imageExtensions.contains(pathExtention!)
-//                    {
-//                        AF.request(data as! URLConvertible, method: .get).responseImage { response in
-//                            if let image = response.data{
-//                                DispatchQueue.main.async {
-//                                    self.image.image = UIImage(data: image)
-//                                }
-//                            }else{
-//                                self.resultText.text = "Invalid URL"
-//                            }
-//                        }
-//
-//                    }else
-//                    {
-//                        resultText.text = "This item does not have an image"
-//                    }
-//    }
-//}
-
-//extension SecondViewController {
-//    func checkImageData(){
-//        AF.request("http://This/will/not/load/").responseJSON { (response) in
-//            if let response = response.data{
-//                print("This link is good")
-//            } else {
-//                print("Invalid URL")
-//            }
-//        }
-//    }
-//}
-
 //MARK: - Codes to save image to Photos Album
 extension SecondViewController {
+    
+    func addImageToAlbum(){
+        guard let image = dataImage.image else {return}
+        // save image to photos album on iphones
+        UIImageWriteToSavedPhotosAlbum(image,
+                                       self,
+                                       #selector(imageSaveToPhotoAlbum(_:didFinishSavingWithError:contextInfo:)),
+                                       nil)
+    }
     
     // this part is from hackingwithSwift.com
     /*
@@ -446,7 +412,7 @@ extension SecondViewController {
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             present(ac, animated: true)
         } else {
-            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .alert)
+            let ac = UIAlertController(title: "Saved!", message: "Your image has been saved to your photos.", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             present(ac, animated: true)
         }
